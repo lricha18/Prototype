@@ -19,7 +19,7 @@ window.onload = function() {
         // Load an image and call it 'logo'.
         game.load.image( 'logo', 'assets/phaser.png' );
         game.load.image( 'background','assets/background.jpg');
-        game.load.image('player', 'assets/dude.png');
+        game.load.spritesheet('player', 'assets/dude.png',32,48);
     }
     
     var bouncy;
@@ -43,7 +43,7 @@ window.onload = function() {
         
         // Anchor the sprite at its center, as opposed to its top-left corner.
         // so it will be truly centered.
-        player.anchor.setTo( 0.5, 0.5 );
+        //player.anchor.setTo( 0.5, 0.5 );
         
         // Make the player affected by gravity
         game.physics.arcade.gravity.y = 400;
@@ -58,6 +58,7 @@ window.onload = function() {
         player.animations.add('left', [0,1,2,3], 10, true);
         player.animations.add('forward', [4], 20, true);
         player.animations.add('right', [5,6,7,8], 10, true);
+        game.camera.follow(player);
         
         // Make it bounce off of the world bounds.
         //player.body.collideWorldBounds = true;
@@ -106,7 +107,7 @@ window.onload = function() {
     }
     else
     {
-        if (facing != 'idle')
+        if (facing != 'forward')
         {
             player.animations.stop();
 
@@ -119,7 +120,7 @@ window.onload = function() {
                 player.frame = 5;
             }
 
-            facing = 'idle';
+            facing = 'forward';
         }
     }
  
