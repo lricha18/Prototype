@@ -18,21 +18,51 @@ window.onload = function() {
     function preload() {
         // Load an image and call it 'logo'.
         game.load.image( 'logo', 'assets/phaser.png' );
+        game.load.image( 'background','assets/background.jpg');
+        game.load.image('player', 'assets/dude.png');
     }
     
     var bouncy;
+    var bg;
+    var player;
+    var facing = 'left';
+    var cursors;
+    var jumpButton;
     
     function create() {
+        //Change the background image and scale to fit screen
+        bg=game.add.tileSprite(0,0,2880,1800, 'background');
+        bg.scale.y=.35
+        bg.scale.x=.3
+        
         // Create a sprite at the center of the screen using the 'logo' image.
-        bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
+        //bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
+        
+        // Create a sprite to be the player
+        player = game.add.sprite(32,32, 'player');
+        
         // Anchor the sprite at its center, as opposed to its top-left corner.
         // so it will be truly centered.
-        bouncy.anchor.setTo( 0.5, 0.5 );
+        player.anchor.setTo( 0.5, 0.5 );
+        
+        // Make the player affected by gravity
+        game.physics.arcade.gravity.y = 400;
         
         // Turn on the arcade physics engine for this sprite.
-        game.physics.enable( bouncy, Phaser.Physics.ARCADE );
+        game.physics.enable( player, Phaser.Physics.ARCADE );
+        
+        // Player animations
+        player.body.bounce.y = .1;
+        player.body.collideWorldBounds = true;
+        player.body.setSize(20,32,5,16);
+        player.animations.add('left', [0,1,2,3], 10, true);
+        player.animations.add('forward', [4], 20, true);
+        player.animations.add('right', [5,6,7,8], 10, true);
+        
         // Make it bounce off of the world bounds.
-        bouncy.body.collideWorldBounds = true;
+        //player.body.collideWorldBounds = true;
+        
+        cursors = game.input.keyboard.createCursorKeys();
         
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
@@ -47,6 +77,58 @@ window.onload = function() {
         // in X or Y.
         // This function returns the rotation angle that makes it visually match its
         // new trajectory.
-        bouncy.rotation = game.physics.arcade.accelerateToPointer( bouncy, this.game.input.activePointer, 500, 500, 500 );
+        //bouncy.rotation = game.physics.arcade.accelerateToPointer( bouncy, this.game.input.activePointer, 500, 500, 500 );
+        
+        
+        
+        player.body.velocity.x = 0;
+        
+        
+       if (cursors.left.isDown)
+    {
+        player.body.velocity.x = -150;
+
+        if (facing != 'left')
+        {
+            player.animations.play('left');
+            facing = 'left';
+        }
+    }
+    else if (cursors.right.isDown)
+    {
+        player.body.velocity.x = 150;
+
+        if (facing != 'right')
+        {
+            player.animations.play('right');
+            facing = 'right';
+        }
+    }
+    else
+    {
+        if (facing != 'idle')
+        {
+            player.animations.stop();
+
+            if (facing == 'left')
+            {
+                player.frame = 0;
+            }
+            else
+            {
+                player.frame = 5;
+            }
+
+            facing = 'idle';
+        }
+    }
+ 
+   if (cursors.up.isDown && player.body.onFloor())
+    {
+        player.body.velocity.y = -250;
+    }
+     
+        
+        
     }
 };
