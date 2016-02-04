@@ -47,6 +47,7 @@ window.onload = function() {
         //Creates star to be collected
         stars = game.add.physicsGroup();
         var star;
+        stars.physocsBodyType = Phaser.Physics.ARCADE;
         star = stars.create(730,120,'star');
         star.body.allowGravity=true; 
         //star.body.gravity.y=200;
@@ -57,43 +58,21 @@ window.onload = function() {
         ledges.physicsBodyType = Phaser.Physics.ARCADE;
         var ledge;
         
-        
-        for(var i = 0; i< 15;i++)
+        // Creates the ledges the player can jump on
+        for(var i = 1; i< 15;i++)
             {
                 ledge = ledges.create(i*52,600-(i*30)-20,'ledge')
                 ledge.body.bounce.set(0);
                 ledge.body.immovable = true;
             }
-                      
-//        var offset = 13;
-//
-//        for(var i =15; i < 20;i++)
-//            {
-//                ledge = ledges.create((offset*52),600-(i*30),'ledge')
-//                ledge.body.bounce.set(0);
-//                ledge.body.immovable = true;
-//                offset--;
-//            }
-//        for(var i = 19;i>15;i--)
-//            {
-//                ledge = ledges.create((offset*52),600-(i*30),'ledge')
-//                ledge.body.bounce.set(0);
-//                ledge.body.immovable = true;
-//                offset--;
-//                
-//            }
-//        
-
         
         // Create a sprite to be the player
         player = game.add.sprite(32,32, 'player');
         
-        // Anchor the sprite at its center, as opposed to its top-left corner.
-        // so it will be truly centered.
-        //player.anchor.setTo( 0.5, 0.5 );
         
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( player, Phaser.Physics.ARCADE );
+        
         
         // Make the player affected by gravity
         player.body.gravity.y = 600;
@@ -131,7 +110,7 @@ window.onload = function() {
 
         
         game.physics.arcade.collide(player,ledges);
-        //game.physics.arcade.collide(star,ledges);
+        game.physics.arcade.collide(player,stars);
         player.body.velocity.x = 0;
         
 
@@ -179,7 +158,10 @@ window.onload = function() {
         player.body.velocity.y = -250;
     }
      
-        
-        
+//   if (player.body.)   
+//       {
+//           //star.kill();
+//       }
+//        
     }
 };
