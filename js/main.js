@@ -20,6 +20,8 @@ window.onload = function() {
         game.load.image( 'logo', 'assets/phaser.png' );
         game.load.image( 'background','assets/background.jpg');
         game.load.spritesheet('player', 'assets/dude.png',32,48);
+        game.load.image('ledge', 'assets/brick2.png');
+        game.load.image('star', 'assets/star2.png');
     }
     
     var bouncy;
@@ -28,6 +30,9 @@ window.onload = function() {
     var facing = 'left';
     var cursors;
     var jumpButton;
+    var ledges;
+    var stars;
+
     
     function create() {
         //Change the background image and scale to fit screen
@@ -35,8 +40,50 @@ window.onload = function() {
         bg.scale.y=.35
         bg.scale.x=.3
         
-        // Create a sprite at the center of the screen using the 'logo' image.
-        //bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
+        //Checks bounds collisions with all sides except the sky
+        game.physics.arcade.checkCollision.up = false;
+        
+        
+        //Creates star to be collected
+        stars = game.add.physicsGroup();
+        var star;
+        star = stars.create(730,120,'star');
+        star.body.allowGravity=true; 
+        //star.body.gravity.y=200;
+        
+        //Creates ledges group
+        ledges = game.add.physicsGroup();
+        ledges.enableBody = true;
+        ledges.physicsBodyType = Phaser.Physics.ARCADE;
+        var ledge;
+        
+        
+        for(var i = 0; i< 15;i++)
+            {
+                ledge = ledges.create(i*52,600-(i*30)-20,'ledge')
+                ledge.body.bounce.set(0);
+                ledge.body.immovable = true;
+            }
+                      
+//        var offset = 13;
+//
+//        for(var i =15; i < 20;i++)
+//            {
+//                ledge = ledges.create((offset*52),600-(i*30),'ledge')
+//                ledge.body.bounce.set(0);
+//                ledge.body.immovable = true;
+//                offset--;
+//            }
+//        for(var i = 19;i>15;i--)
+//            {
+//                ledge = ledges.create((offset*52),600-(i*30),'ledge')
+//                ledge.body.bounce.set(0);
+//                ledge.body.immovable = true;
+//                offset--;
+//                
+//            }
+//        
+
         
         // Create a sprite to be the player
         player = game.add.sprite(32,32, 'player');
@@ -45,11 +92,11 @@ window.onload = function() {
         // so it will be truly centered.
         //player.anchor.setTo( 0.5, 0.5 );
         
-        // Make the player affected by gravity
-        game.physics.arcade.gravity.y = 400;
-        
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( player, Phaser.Physics.ARCADE );
+        
+        // Make the player affected by gravity
+        player.body.gravity.y = 600;
         
         // Player animations
         player.body.bounce.y = .1;
@@ -67,8 +114,8 @@ window.onload = function() {
         
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
-        var style = { font: "25px Verdana", fill: "#9999ff", align: "center" };
-        var text = game.add.text( game.world.centerX, 15, "CHANGED SOMETHING!", style );
+        var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+        var text = game.add.text( game.world.centerX, 15, "What is this world?", style );
         text.anchor.setTo( 0.5, 0.0 );
     }
     
@@ -80,11 +127,14 @@ window.onload = function() {
         // new trajectory.
         //bouncy.rotation = game.physics.arcade.accelerateToPointer( bouncy, this.game.input.activePointer, 500, 500, 500 );
         
+
+
         
-        
+        game.physics.arcade.collide(player,ledges);
+        //game.physics.arcade.collide(star,ledges);
         player.body.velocity.x = 0;
         
-        
+
        if (cursors.left.isDown)
     {
         player.body.velocity.x = -150;
@@ -124,7 +174,7 @@ window.onload = function() {
         }
     }
  
-   if (cursors.up.isDown && player.body.onFloor())
+   if (cursors.up.isDown && (player.body.onFloor()||player.body.touching.down==true))
     {
         player.body.velocity.y = -250;
     }
