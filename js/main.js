@@ -32,6 +32,7 @@ window.onload = function() {
     var jumpButton;
     var ledges;
     var stars;
+    var text;
 
     
     function create() {
@@ -95,7 +96,7 @@ window.onload = function() {
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-        var text = game.add.text( game.world.centerX, 15, "What is this world?", style );
+         text = game.add.text( game.world.centerX, 15, "What is this world?", style );
         text.anchor.setTo( 0.5, 0.0 );
     }
     
@@ -166,8 +167,13 @@ window.onload = function() {
         
     }
     
+    //Action occurs when the player hits the star
     function hitStar(_player,_star)
     {
         _star.kill();
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+         text = game.add.text( game.world.centerX, 50, "You WIN!", style );
+        text.anchor.setTo( 0.5, 0.0 );
+        
     }
 };
