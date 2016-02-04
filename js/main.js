@@ -49,8 +49,9 @@ window.onload = function() {
         var star;
         stars.physocsBodyType = Phaser.Physics.ARCADE;
         star = stars.create(730,120,'star');
-        star.body.allowGravity=true; 
-        //star.body.gravity.y=200;
+        star.body.allowGravity=true;
+        star.body.bounce.set(.5);
+        star.body.gravity.y=100;
         
         //Creates ledges group
         ledges = game.add.physicsGroup();
@@ -110,7 +111,7 @@ window.onload = function() {
 
         
         game.physics.arcade.collide(player,ledges);
-        game.physics.arcade.collide(player,stars);
+        game.physics.arcade.collide(stars,ledges);
         player.body.velocity.x = 0;
         
 
@@ -157,11 +158,16 @@ window.onload = function() {
     {
         player.body.velocity.y = -250;
     }
+    else{
+        game.physics.arcade.collide(player,stars,hitStar,null,this);
+    }
      
-//   if (player.body.)   
-//       {
-//           //star.kill();
-//       }
-//        
+
+        
+    }
+    
+    function hitStar(_player,_star)
+    {
+        _star.kill();
     }
 };
