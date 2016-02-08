@@ -22,6 +22,9 @@ window.onload = function() {
         game.load.spritesheet('player', 'assets/dude.png',32,48);
         game.load.image('ledge', 'assets/brick2.png');
         game.load.image('star', 'assets/star2.png');
+        game.load.spritesheet('girl', 'assets/girl.png',60,60); 
+        game.load.audio('finish','assets/pickup.wav');
+        game.load.audio('jump','assets/jump.wav');
     }
     
     var bouncy;
@@ -33,7 +36,8 @@ window.onload = function() {
     var ledges;
     var stars;
     var text;
-
+    var sound;
+    var jumpSound;
     
     function create() {
         //Change the background image and scale to fit screen
@@ -69,7 +73,7 @@ window.onload = function() {
             }
         
         // Create a sprite to be the player
-        player = game.add.sprite(32,32, 'player');
+        player = game.add.sprite(60,60, 'girl');
         
         
         // Turn on the arcade physics engine for this sprite.
@@ -83,9 +87,9 @@ window.onload = function() {
         player.body.bounce.y = .1;
         player.body.collideWorldBounds = true;
         player.body.setSize(20,32,5,16);
-        player.animations.add('left', [0,1,2,3], 10, true);
-        player.animations.add('forward', [4], 20, true);
-        player.animations.add('right', [5,6,7,8], 10, true);
+        player.animations.add('left', [8,9,10,11,13,14,15], 10, true);
+        player.animations.add('forward', [6], 20, true);
+        player.animations.add('right', [16,17,18,19,20,21,22,23], 10, true);
         game.camera.follow(player);
         
         // Make it bounce off of the world bounds.
@@ -158,6 +162,7 @@ window.onload = function() {
    if (cursors.up.isDown && (player.body.onFloor()||player.body.touching.down==true))
     {
         player.body.velocity.y = -250;
+        jumpSound = game.sound.play('jump');
     }
     else{
         game.physics.arcade.collide(player,stars,hitStar,null,this);
@@ -168,9 +173,10 @@ window.onload = function() {
     }
     
     //Action occurs when the player hits the star
-    function hitStar(_player,_star)
+    function hitStar(player,star)
     {
-        _star.kill();
+        star.kill();
+        sound = game.sound.play('finish');
                 var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
          text = game.add.text( game.world.centerX, 50, "You WIN!", style );
         text.anchor.setTo( 0.5, 0.0 );
