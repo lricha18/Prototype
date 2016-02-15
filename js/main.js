@@ -61,7 +61,7 @@ window.onload = function() {
         stars.physocsBodyType = Phaser.Physics.ARCADE;
         star = stars.create(730,120,'star');
         star.body.allowGravity=true;
-        star.body.bounce.set(.5);
+
         star.body.gravity.y=100;
         
         
@@ -115,14 +115,13 @@ window.onload = function() {
         
         game.physics.arcade.collide(player,stars,hitStar,null,this);
         
-        /*if (star.inCamera==false)
+        //if (star.worldVisible==false)
             {
                 //star.destroy();
                 //star = stars.create(camera.x+(Math.random()/800),120,'star');
                 //star.body.allowGravity=true;
-                //star.body.bounce.set(.5);
                 //star.body.gravity.y=100;
-            }*/
+            }
         
         if(player.inCamera==false)
             {
@@ -151,7 +150,7 @@ window.onload = function() {
     }
     else if (cursors.right.isDown)
     {
-        player.body.velocity.x = 150;
+        player.body.velocity.x = 200;
         if (facing != 'right')
         {
             player.animations.play('right');
@@ -179,7 +178,7 @@ window.onload = function() {
  
    if (cursors.up.isDown && (player.body.onFloor()||player.body.touching.down==true))
     {
-        player.body.velocity.y = -250;
+        player.body.velocity.y = -450;
         jumpSound = game.sound.play('jump');
     }
 
@@ -193,9 +192,10 @@ window.onload = function() {
     {
         star.destroy();
         sound = game.sound.play('finish');
-        star = stars.create(game.camera.x + 800 + Math.random(),120,'star');
+        var random =game.rnd.integerInRange(game.camera.x+100,game.camera.x+800);
+        star = stars.create(random,120,'star');
         star.body.allowGravity=true;
-        star.body.bounce.set(.5);
+        
         star.body.gravity.y=100;
         score+=10;
         scoreText.text = scoreString + score
