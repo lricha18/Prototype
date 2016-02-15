@@ -13,12 +13,14 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
+    var game = new Phaser.Game( 800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render } );
+    
+    
     
     function preload() {
         // Load an image and call it 'logo'.
         game.load.image( 'logo', 'assets/phaser.png' );
-        game.load.image( 'background','assets/background.jpg');
+        game.load.image( 'background','assets/sea.png');
         game.load.spritesheet('player', 'assets/dude.png',32,48);
         game.load.image('ledge', 'assets/brick2.png');
         game.load.image('star', 'assets/star2.png');
@@ -39,11 +41,12 @@ window.onload = function() {
     var sound;
     var jumpSound;
     
+    
     function create() {
         //Change the background image and scale to fit screen
-        bg=game.add.tileSprite(0,0,2880,1800, 'background');
-        bg.scale.y=.35
-        bg.scale.x=.3
+        game.world.setBounds(0,0, 36000,600);
+        bg=game.add.tileSprite(0,0,36000,600, 'background');
+        //game.world.setBounds(0,0, 2880,600);
         
         //Checks bounds collisions with all sides except the sky
         game.physics.arcade.checkCollision.up = false;
@@ -73,7 +76,7 @@ window.onload = function() {
             }
         
         // Create a sprite to be the player
-        player = game.add.sprite(60,60, 'girl');
+        player = game.add.sprite(100,game.height-200, 'girl');
         
         
         // Turn on the arcade physics engine for this sprite.
@@ -90,17 +93,17 @@ window.onload = function() {
         player.animations.add('left', [8,9,10,11,13,14,15], 10, true);
         player.animations.add('forward', [6], 20, true);
         player.animations.add('right', [16,17,18,19,20,21,22,23], 10, true);
-        game.camera.follow(player);
+        //game.camera.follow(player);
         
         // Make it bounce off of the world bounds.
-        //player.body.collideWorldBounds = true;
+        player.body.collideWorldBounds = true;
         
         cursors = game.input.keyboard.createCursorKeys();
         
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-         text = game.add.text( game.world.centerX, 15, "What is this world?", style );
+         text = game.add.text( 400, 10, "What is this world?", style );
         text.anchor.setTo( 0.5, 0.0 );
     }
     
@@ -119,6 +122,21 @@ window.onload = function() {
         game.physics.arcade.collide(stars,ledges);
         player.body.velocity.x = 0;
         
+        
+        
+        
+        
+        if(player.inCamera==false)
+            {
+                player.kill();
+                text = game.add.text( 400, 50, "You died!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else{
+            game.camera.x += 1;
+
+        }
+        
 
        if (cursors.left.isDown)
     {
@@ -133,7 +151,6 @@ window.onload = function() {
     else if (cursors.right.isDown)
     {
         player.body.velocity.x = 150;
-
         if (facing != 'right')
         {
             player.animations.play('right');
@@ -182,4 +199,10 @@ window.onload = function() {
         text.anchor.setTo( 0.5, 0.0 );
         
     }
+    
+    function render() {
+
+    game.debug.cameraInfo(game.camera, 32, 32);
+
+}
 };
