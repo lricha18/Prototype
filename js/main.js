@@ -40,6 +40,9 @@ window.onload = function() {
     var text;
     var sound;
     var jumpSound;
+    var score = 0;
+    var scoreString;
+    var scoreText;
     
     
     function create() {
@@ -51,8 +54,8 @@ window.onload = function() {
         //Checks bounds collisions with all sides except the sky
         game.physics.arcade.checkCollision.up = false;
         
-        
-        //Creates star to be collected
+
+        //Creates the star group to be collected
         stars = game.add.physicsGroup();
         var star;
         stars.physocsBodyType = Phaser.Physics.ARCADE;
@@ -61,22 +64,15 @@ window.onload = function() {
         star.body.bounce.set(.5);
         star.body.gravity.y=100;
         
-        //Creates ledges group
-        ledges = game.add.physicsGroup();
-        ledges.enableBody = true;
-        ledges.physicsBodyType = Phaser.Physics.ARCADE;
-        var ledge;
         
-        // Creates the ledges the player can jump on
-        for(var i = 1; i< 15;i++)
-            {
-                ledge = ledges.create(i*52,600-(i*30)-20,'ledge')
-                ledge.body.bounce.set(0);
-                ledge.body.immovable = true;
-            }
+        //  The score
+        scoreString = 'Score : ';
+        scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
+        scoreText.fixedToCamera = true;
+        
         
         // Create a sprite to be the player
-        player = game.add.sprite(100,game.height-200, 'girl');
+        player = game.add.sprite(400,game.height-200, 'girl');
         
         
         // Turn on the arcade physics engine for this sprite.
@@ -89,7 +85,7 @@ window.onload = function() {
         // Player animations
         player.body.bounce.y = .1;
         player.body.collideWorldBounds = true;
-        player.body.setSize(20,32,5,16);
+        player.body.setSize(32,32,5,16);
         player.animations.add('left', [8,9,10,11,13,14,15], 10, true);
         player.animations.add('forward', [6], 20, true);
         player.animations.add('right', [16,17,18,19,20,21,22,23], 10, true);
@@ -103,37 +99,42 @@ window.onload = function() {
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-         text = game.add.text( 400, 10, "What is this world?", style );
+        text = game.add.text( 400, 10, "Catch the stars!", style );
         text.anchor.setTo( 0.5, 0.0 );
+        text.fixedToCamera=true;
     }
     
     function update() {
-        // Accelerate the 'logo' sprite towards the cursor,
-        // accelerating at 500 pixels/second and moving no faster than 500 pixels/second
-        // in X or Y.
-        // This function returns the rotation angle that makes it visually match its
-        // new trajectory.
-        //bouncy.rotation = game.physics.arcade.accelerateToPointer( bouncy, this.game.input.activePointer, 500, 500, 500 );
         
 
 
         
-        game.physics.arcade.collide(player,ledges);
+        //game.physics.arcade.collide(player,ledges);
         game.physics.arcade.collide(stars,ledges);
         player.body.velocity.x = 0;
         
+        game.physics.arcade.collide(player,stars,hitStar,null,this);
         
-        
-        
+        /*if (star.inCamera==false)
+            {
+                //star.destroy();
+                //star = stars.create(camera.x+(Math.random()/800),120,'star');
+                //star.body.allowGravity=true;
+                //star.body.bounce.set(.5);
+                //star.body.gravity.y=100;
+            }*/
         
         if(player.inCamera==false)
             {
                 player.kill();
-                //text = game.add.text( 400, 50, "You died!", style );
-                //text.anchor.setTo( 0.5, 0.0 );
+                //Put Player Losing Screen Here
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 400, 50, "You died! Refresh to play again", style );
+                text.anchor.setTo( 0.5, 0.0 );
             }
         else{
-            game.camera.x += 1;
+            game.camera.x += 1.5;
 
         }
         
@@ -181,9 +182,7 @@ window.onload = function() {
         player.body.velocity.y = -250;
         jumpSound = game.sound.play('jump');
     }
-    else{
-        game.physics.arcade.collide(player,stars,hitStar,null,this);
-    }
+
      
 
         
@@ -192,17 +191,20 @@ window.onload = function() {
     //Action occurs when the player hits the star
     function hitStar(player,star)
     {
-        star.kill();
+        star.destroy();
         sound = game.sound.play('finish');
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-         text = game.add.text( game.world.centerX, 50, "You WIN!", style );
-        text.anchor.setTo( 0.5, 0.0 );
+        star = stars.create(game.camera.x + 800 + Math.random(),120,'star');
+        star.body.allowGravity=true;
+        star.body.bounce.set(.5);
+        star.body.gravity.y=100;
+        score+=10;
+        scoreText.text = scoreString + score
         
     }
     
     function render() {
 
-    game.debug.cameraInfo(game.camera, 32, 32);
+    //game.debug.cameraInfo(game.camera, 32, 32);
 
 }
 };
