@@ -133,7 +133,7 @@ window.onload = function() {
                 text.anchor.setTo( 0.5, 0.0 );
             }
         else{
-            game.camera.x += 1.5;
+            game.camera.x += 2;
 
         }
         
