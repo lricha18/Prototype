@@ -129,8 +129,8 @@ window.onload = function() {
         if(player.inCamera==false)
             {
                 player.kill();
-                text = game.add.text( 400, 50, "You died!", style );
-                text.anchor.setTo( 0.5, 0.0 );
+                //text = game.add.text( 400, 50, "You died!", style );
+                //text.anchor.setTo( 0.5, 0.0 );
             }
         else{
             game.camera.x += 1;
