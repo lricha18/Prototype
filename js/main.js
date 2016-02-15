@@ -192,7 +192,7 @@ window.onload = function() {
     {
         star.destroy();
         sound = game.sound.play('finish');
-        var random =game.rnd.integerInRange(game.camera.x+100,game.camera.x+800);
+        var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
         star = stars.create(random,120,'star');
         star.body.allowGravity=true;
         
