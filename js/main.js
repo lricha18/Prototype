@@ -43,6 +43,10 @@ window.onload = function() {
     var score = 0;
     var scoreString;
     var scoreText;
+    var cameraSpeed = 2;
+    var playerSpeedR = 200;
+    var playerSpeedL = -150;
+    var starGravity = 100;
     
     
     function create() {
@@ -58,11 +62,15 @@ window.onload = function() {
         //Creates the star group to be collected
         stars = game.add.physicsGroup();
         var star;
-        stars.physocsBodyType = Phaser.Physics.ARCADE;
+        stars.physicsBodyType = Phaser.Physics.ARCADE;
         star = stars.create(730,120,'star');
         star.body.allowGravity=true;
-
-        star.body.gravity.y=100;
+        star.body.gravity.y= starGravity;
+        star.checkWorldBounds = true;
+        star.events.onOutOfBounds.add(starMissed, this );
+        game.physics.enable(stars, Phaser.Physics.ARCADE);
+        
+        
         
         
         //  The score
@@ -107,21 +115,21 @@ window.onload = function() {
     function update() {
         
 
-
+        if (game.camera.x >=35000)
+            {
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 400, 50, "You made it to the end with a Great Score!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+                game.paused=true;
+            }
         
         //game.physics.arcade.collide(player,ledges);
-        game.physics.arcade.collide(stars,ledges);
+        //game.physics.arcade.collide(stars,ledges);
         player.body.velocity.x = 0;
-        
+       
+        //Checks if the player has hit a star
         game.physics.arcade.collide(player,stars,hitStar,null,this);
         
-        //if (star.worldVisible==false)
-            {
-                //star.destroy();
-                //star = stars.create(camera.x+(Math.random()/800),120,'star');
-                //star.body.allowGravity=true;
-                //star.body.gravity.y=100;
-            }
         
         if(player.inCamera==false)
             {
@@ -131,16 +139,17 @@ window.onload = function() {
                 var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
                 text = game.add.text( game.camera.x + 400, 50, "You died! Refresh to play again", style );
                 text.anchor.setTo( 0.5, 0.0 );
+                game.paused=true;
             }
         else{
-            game.camera.x += 2;
+            game.camera.x += cameraSpeed;
 
         }
         
 
        if (cursors.left.isDown)
     {
-        player.body.velocity.x = -150;
+        player.body.velocity.x = playerSpeedL;
 
         if (facing != 'left')
         {
@@ -150,7 +159,7 @@ window.onload = function() {
     }
     else if (cursors.right.isDown)
     {
-        player.body.velocity.x = 200;
+        player.body.velocity.x = playerSpeedR;
         if (facing != 'right')
         {
             player.animations.play('right');
@@ -190,15 +199,87 @@ window.onload = function() {
     //Action occurs when the player hits the star
     function hitStar(player,star)
     {
+        
+        //Destroys old star and creats new one to be collected.
+        //Updates Score for collected star.
         star.destroy();
         sound = game.sound.play('finish');
         var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
         star = stars.create(random,120,'star');
-        star.body.allowGravity=true;
-        
-        star.body.gravity.y=100;
-        score+=10;
+        star.body.allowGravity = true;
+        star.body.gravity.y = starGravity;
+        star.checkWorldBounds = true;
+        star.events.onOutOfBounds.add(starMissed, this );
+        score += 10;
         scoreText.text = scoreString + score
+        
+        //This increases the difficulty by increasing the speed
+        if(score==30)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=20;
+                starGravity += 50;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else if(score==60)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=80;
+                starGravity += 100;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP AGAIN!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else if(score==80)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=80;
+                starGravity += 200;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "THIS IS FAST!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else if(score==100)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=80;
+                starGravity += 200;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "RUN FASTER!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else if(score==120)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=80;
+                starGravity += 200;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "ALMOST THERE!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
+        else if(score>=130)
+            {
+                cameraSpeed+=1;
+                playerSpeedL-=20;
+                playerSpeedR+=80;
+                starGravity += 200;
+                
+                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+                text = game.add.text( game.camera.x + 800, 50, "FASTER!", style );
+                text.anchor.setTo( 0.5, 0.0 );
+            }
         
     }
     
@@ -207,4 +288,17 @@ window.onload = function() {
     //game.debug.cameraInfo(game.camera, 32, 32);
 
 }
+    
+    //Event when a star is missed 
+    function starMissed(star){
+        star.kill();
+        var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
+        star = stars.create(random,120,'star');
+        star.body.allowGravity=true;
+        star.body.gravity.y=starGravity;
+        star.checkWorldBounds = true;
+        star.events.onOutOfBounds.add(starMissed, this );
+        //score-=5;
+        //scoreText.text = scoreString + score
+    }
 };
