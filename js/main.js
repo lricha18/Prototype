@@ -272,72 +272,80 @@ window.onload = function() {
     //Increases the difficulty
     function increaseDifficulty()
     {
-                if(score==30)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 50;
+    
+        if(score==10)
+        {                
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "Press UP to jump!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
+        
+        if(score==30)
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 50;
                 
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
         else if(score==60)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 100;
-                
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP AGAIN!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 100;
+            
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "SPEEDING UP AGAIN!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
         else if(score==80)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 200;
-                
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "THIS IS FAST!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 200;
+            
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "THIS IS FAST!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
         else if(score==100)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 200;
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 200;
                 
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "RUN FASTER!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "RUN FASTER!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
         else if(score==120)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 200;
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 200;
                 
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "ALMOST THERE!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "ALMOST THERE!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
         else if(score>=130)
-            {
-                cameraSpeed+=1;
-                playerSpeedL-=20;
-                playerSpeedR+=80;
-                starGravity += 200;
+        {
+            cameraSpeed+=1;
+            playerSpeedL-=20;
+            playerSpeedR+=80;
+            starGravity += 200;
                 
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 800, 50, "FASTER!", style );
-                text.anchor.setTo( 0.5, 0.0 );
-            }
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.camera.x + 800, 50, "FASTER!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+        }
      
     }
     
