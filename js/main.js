@@ -25,8 +25,9 @@ window.onload = function() {
         game.load.image('ledge', 'assets/brick2.png');
         game.load.image('star', 'assets/star2.png');
         game.load.spritesheet('girl', 'assets/girl.png',60,60); 
-        game.load.audio('finish','assets/pickup.wav');
+        game.load.audio('finish','assets/cheering.wav');
         game.load.audio('jump','assets/jump.wav');
+        game.load.audio('music', 'assets/fiati.wav');
     }
     
     var bouncy;
@@ -47,6 +48,7 @@ window.onload = function() {
     var playerSpeedR = 200;
     var playerSpeedL = -150;
     var starGravity = 100;
+    var music;
     
     
     function create() {
@@ -70,10 +72,12 @@ window.onload = function() {
         star.events.onOutOfBounds.add(starMissed, this );
         game.physics.enable(stars, Phaser.Physics.ARCADE);
         
+        //Creates the background Music
+        music = game.add.audio('music');
+        music.play();
+        music.loop = true;
         
-        
-        
-        //  The score
+        //  The score String is made and displayed here
         scoreString = 'Score : ';
         scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
         scoreText.fixedToCamera = true;
@@ -113,8 +117,8 @@ window.onload = function() {
     }
     
     function update() {
-        
 
+        //If player makes it to the end of the world
         if (game.camera.x >=999000)
             {
                 var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
@@ -131,6 +135,8 @@ window.onload = function() {
         game.physics.arcade.collide(player,stars,hitStar,null,this);
         
         
+        //Checks if player has left the screen
+        //Kills player if they have otherwise move the camera
         if(player.inCamera==false)
             {
                 player.kill();
@@ -146,54 +152,64 @@ window.onload = function() {
 
         }
         
-
-       if (cursors.left.isDown)
-    {
-        player.body.velocity.x = playerSpeedL;
-
-        if (facing != 'left')
-        {
-            player.animations.play('left');
-            facing = 'left';
-        }
-    }
-    else if (cursors.right.isDown)
-    {
-        player.body.velocity.x = playerSpeedR;
-        if (facing != 'right')
-        {
-            player.animations.play('right');
-            facing = 'right';
-        }
-    }
-    else
-    {
-        if (facing != 'forward')
-        {
-            player.animations.stop();
-
-            if (facing == 'left')
-            {
-                player.frame = 0;
-            }
-            else
-            {
-                player.frame = 5;
-            }
-
-            facing = 'forward';
-        }
-    }
- 
-   if (cursors.up.isDown && (player.body.onFloor()||player.body.touching.down==true))
-    {
-        player.body.velocity.y = -450;
-        jumpSound = game.sound.play('jump');
-    }
-
-     
+        //Loops the Background Music
+        loopMusic();
+        
+        //Input detection
+        detectInput();
 
         
+    }
+    
+    
+    //Detects if the player has given input
+    function detectInput()
+    {
+        if (cursors.left.isDown)
+            {
+                player.body.velocity.x = playerSpeedL;
+
+                if (facing != 'left')
+                {
+                    player.animations.play('left');
+                    facing = 'left';
+                }
+             }
+        else if (cursors.right.isDown)
+        {
+            player.body.velocity.x = playerSpeedR;
+            if (facing != 'right')
+            {
+                player.animations.play('right');
+                facing = 'right';
+            }
+        }
+        else
+        {
+            if (facing != 'forward')
+            {
+                player.animations.stop();
+
+                if (facing == 'left')
+                {
+                    player.frame = 0;
+                }
+                else
+                {
+                    player.frame = 5;
+                }
+
+                facing = 'forward';
+            }
+        }
+ 
+        if (cursors.up.isDown && (player.body.onFloor()||player.body.touching.down==true))
+        {
+            player.body.velocity.y = -450;
+            jumpSound = game.sound.play('jump');
+        }
+
+    
     }
     
     //Action occurs when the player hits the star
@@ -214,7 +230,49 @@ window.onload = function() {
         scoreText.text = scoreString + score
         
         //This increases the difficulty by increasing the speed
-        if(score==30)
+        increaseDifficulty();
+        
+
+    }
+    
+    function render() {
+
+    //game.debug.cameraInfo(game.camera, 32, 32);
+
+}
+    
+    
+    //Event when a star is missed 
+    function starMissed(star){
+        star.kill();
+        var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
+        star = stars.create(random,120,'star');
+        star.body.allowGravity=true;
+        star.body.gravity.y=starGravity;
+        star.checkWorldBounds = true;
+        star.events.onOutOfBounds.add(starMissed, this );
+        //score-=5;
+        //scoreText.text = scoreString + score
+    }
+    
+    
+    
+    //Loops the Background Music
+    function loopMusic()
+    {            
+        if (music.isPlaying == false)
+            {
+                music.restart();
+            }
+    }
+    
+    
+    
+    
+    //Increases the difficulty
+    function increaseDifficulty()
+    {
+                if(score==30)
             {
                 cameraSpeed+=1;
                 playerSpeedL-=20;
@@ -280,25 +338,7 @@ window.onload = function() {
                 text = game.add.text( game.camera.x + 800, 50, "FASTER!", style );
                 text.anchor.setTo( 0.5, 0.0 );
             }
-        
+     
     }
     
-    function render() {
-
-    //game.debug.cameraInfo(game.camera, 32, 32);
-
-}
-    
-    //Event when a star is missed 
-    function starMissed(star){
-        star.kill();
-        var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
-        star = stars.create(random,120,'star');
-        star.body.allowGravity=true;
-        star.body.gravity.y=starGravity;
-        star.checkWorldBounds = true;
-        star.events.onOutOfBounds.add(starMissed, this );
-        //score-=5;
-        //scoreText.text = scoreString + score
-    }
 };
