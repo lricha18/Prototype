@@ -51,8 +51,8 @@ window.onload = function() {
     
     function create() {
         //Change the background image and scale to fit screen
-        game.world.setBounds(0,0, 36000,600);
-        bg=game.add.tileSprite(0,0,36000,600, 'background');
+        game.world.setBounds(0,0, 1000000,600);
+        bg=game.add.tileSprite(0,0,1000000,600, 'background');
         //game.world.setBounds(0,0, 2880,600);
         
         //Checks bounds collisions with all sides except the sky
@@ -115,7 +115,7 @@ window.onload = function() {
     function update() {
         
 
-        if (game.camera.x >=35000)
+        if (game.camera.x >=999000)
             {
                 var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
                 text = game.add.text( game.camera.x + 400, 50, "You made it to the end with a Great Score!", style );
@@ -218,7 +218,7 @@ window.onload = function() {
             {
                 cameraSpeed+=1;
                 playerSpeedL-=20;
-                playerSpeedR+=20;
+                playerSpeedR+=80;
                 starGravity += 50;
                 
                 var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
