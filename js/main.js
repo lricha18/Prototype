@@ -30,6 +30,7 @@ window.onload = function() {
         game.load.audio('music', 'assets/fiati.wav');
     }
     
+    
     var bouncy;
     var bg;
     var player;
@@ -65,6 +66,8 @@ window.onload = function() {
         stars = game.add.physicsGroup();
         var star;
         stars.physicsBodyType = Phaser.Physics.ARCADE;
+        
+        //Creates the initial star with world out of bounds detection
         star = stars.create(730,120,'star');
         star.body.allowGravity=true;
         star.body.gravity.y= starGravity;
@@ -76,6 +79,7 @@ window.onload = function() {
         music = game.add.audio('music');
         music.play();
         music.loop = true;
+        
         
         //  The score String is made and displayed here
         scoreString = 'Score : ';
@@ -106,6 +110,7 @@ window.onload = function() {
         // Make it bounce off of the world bounds.
         player.body.collideWorldBounds = true;
         
+        //Makes the controls the arrow keys on the keyboard
         cursors = game.input.keyboard.createCursorKeys();
         
         // Add some text using a CSS style.
@@ -117,7 +122,7 @@ window.onload = function() {
     }
     
     function update() {
-
+        
         //If player makes it to the end of the world
         if (game.camera.x >=999000)
             {
@@ -139,13 +144,7 @@ window.onload = function() {
         //Kills player if they have otherwise move the camera
         if(player.inCamera==false)
             {
-                player.kill();
-                //Put Player Losing Screen Here
-                
-                var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-                text = game.add.text( game.camera.x + 400, 50, "You died! Refresh to play again", style );
-                text.anchor.setTo( 0.5, 0.0 );
-                game.paused=true;
+                endGame();
             }
         else{
             game.camera.x += cameraSpeed;
@@ -350,5 +349,21 @@ window.onload = function() {
         }
      
     }
+    
+    
+    function endGame()
+    {
+        
+        player.kill();
+        //Put Player Losing Screen Here 
+        
+         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+        text = game.add.text( game.camera.x + 400, 50, "You died! Refresh to play again", style );
+        text.anchor.setTo( 0.5, 0.0 );
+        game.paused=true;
+	
+    }
+    
+    
     
 };
