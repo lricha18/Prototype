@@ -243,7 +243,9 @@ window.onload = function() {
     
     
     //Event when a star is missed 
-    function starMissed(star){
+    //Kills the current star and makes a new one fall within the camera window
+    function starMissed(star)
+    {
         star.kill();
         var random =game.rnd.integerInRange(game.camera.x+200,game.camera.x+800);
         star = stars.create(random,120,'star');
