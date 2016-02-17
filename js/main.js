@@ -358,7 +358,7 @@ window.onload = function() {
         //Put Player Losing Screen Here 
         
          var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-        text = game.add.text( game.camera.x + 400, 50, "You died! Refresh to play again", style );
+        text = game.add.text( game.camera.x + 400, 200, "You died! Refresh to play again", style );
         text.anchor.setTo( 0.5, 0.0 );
         game.paused=true;
 	
