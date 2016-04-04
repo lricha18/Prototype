@@ -14,7 +14,7 @@ window.onload = function () {
         game.load.image('star', 'assets/star2.png');
         game.load.image('bullet', 'assets/bullet.png');
         game.load.image('player1', 'assets/ufo.png');
-        game.load.image('player2', 'assets/ufo2.png');
+        //game.load.image('player2', 'assets/ufo2.png');
         game.load.image('start', 'assets/start.png');
         game.load.image('tiles', 'assets/steampunkish-tileb.png');
         
@@ -33,18 +33,18 @@ window.onload = function () {
     var start;
     
     var player1;
-    var player2;
+ 
     
     //Input from players
     var cursors;
-    var cursors2;
+
     
     //Groups
     var stars;
     var bullets;
-    var enemyBullets;
+
     var bullet;
-    var enemyBullet;
+
     
     var text;
     var winText;
@@ -54,20 +54,18 @@ window.onload = function () {
     var score1 = 0;
     var scoreString1;
     var scoreText1;
-    var score2 = 0;
-    var scoreString2;
-    var scoreText2;
+
     
     var speed = 4;
     var music;
     
     //Used so player cannot fire continuously 
     var player1FireCounter = 0;
-    var player2FireCounter = 0;
+
     
     //Players' fire buttons and lock spacebar
     var player1FireButton;
-    var player2FireButton;
+
     var killSpace;
     
     
@@ -86,8 +84,10 @@ window.onload = function () {
         map = game.add.tilemap('map');
         map.addTilesetImage('steampunkish-tileb', 'tiles');
         layer = map.createLayer('Tile Layer 1');
-        layer.resizeWorld();
+        //layer.resizeWorld();
         game.stage.backgroundColor = '#787878';
+        map.setCollision(18);
+        
         
         //Creates the star group to be collected
         stars = game.add.physicsGroup();
@@ -104,16 +104,7 @@ window.onload = function () {
         bullets.setAll('outOfBoundsKill', true);
         bullets.setAll('checkWorldBounds', true);
         
-        // Player 2 bullet group
-        enemyBullets = game.add.group();
-        enemyBullets.enableBody = true;
-        enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-        enemyBullets.createMultiple(30, 'bullet');
-        enemyBullets.setAll('anchor.x', 0.5);
-        enemyBullets.setAll('anchor.y', 1);
-        enemyBullets.setAll('outOfBoundsKill', true);
-        enemyBullets.setAll('checkWorldBounds', true);
-        
+       
         //Creates the initial star with world out of bounds detection
         star = stars.create(400, 300, 'star');
         game.physics.enable(stars, Phaser.Physics.ARCADE);
@@ -127,32 +118,29 @@ window.onload = function () {
         //  The score String is made and displayed here
         scoreString1 = 'Player 1 : ';
         scoreText1 = game.add.text(10, 10, scoreString1 + score1, { font: '34px Arial', fill: '#fff' });
-        scoreString2 = 'Player 2 : ';
-        scoreText2 = game.add.text(600, 10, scoreString2 + score2, { font: '34px Arial', fill: '#fff' });
         
         // Create a sprite to be the player
-        player1 = game.add.sprite(0, 560, 'player1');
-        player2 = game.add.sprite(790, 560, 'player2');
+        player1 = game.add.sprite(100, 460, 'player1');
+       
         
         //Set the anchor to the middle of the players
         player1.anchor.setTo(0.5,0.5);
-        player2.anchor.setTo(0.5,0.5);
+  
         
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable(player1, Phaser.Physics.ARCADE);
-        game.physics.enable(player2, Phaser.Physics.ARCADE);
+
         
         //Makes it so the players may not leave the screen
         player1.body.collideWorldBounds = true;
-        player2.body.collideWorldBounds = true;
+
         
         killSpace = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         
         //Makes the controls the arrow keys on the keyboard
         cursors = game.input.keyboard.createCursorKeys();
         player1FireButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
-        player2FireButton = game.input.keyboard.addKey(Phaser.Keyboard.F)
-        cursors2 = {up: game.input.keyboard.addKey(Phaser.Keyboard.W), down: game.input.keyboard.addKey(Phaser.Keyboard.S), left: game.input.keyboard.addKey(Phaser.Keyboard.A), right: game.input.keyboard.addKey(Phaser.Keyboard.D)};
+        
         
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
@@ -169,24 +157,23 @@ window.onload = function () {
     
     function update()
     {
-        if(score1 >=20 || score2 >=20)
+        if(score1 >=20)
             {
                 endGame();
             }
 
         player1.body.velocity.x = 0;
         player1.body.velocity.y = 0;
-        player2.body.velocity.y = 0;
-        player2.body.velocity.x = 0;
+
        
         
         //Checks if the player has hit a star
-        game.physics.arcade.overlap(player1, stars, hitStar1, null, this);
-        game.physics.arcade.overlap(player2, stars, hitStar2, null, this);
+        //game.physics.arcade.overlap(player1, stars, hitStar1, null, this);
+        //game.physics.arcade.overlap(player2, stars, hitStar2, null, this);
         
-        game.physics.arcade.overlap(player1, player2,resetPlayers, null, this);
-        game.physics.arcade.overlap(player1, enemyBullets, player1Hit, null, this);
-        game.physics.arcade.overlap(player2, bullets, player2Hit, null, this);
+        //game.physics.arcade.overlap(player1, player2,resetPlayers, null, this);
+        //game.physics.arcade.overlap(player1, enemyBullets, player1Hit, null, this);
+        //game.physics.arcade.overlap(player2, bullets, player2Hit, null, this);
 
         
         //Loops the Background Music
@@ -229,34 +216,7 @@ window.onload = function () {
             {
                 fireBullet1();
             }
-        
-        //Player 2 input
-        if (cursors2.left.isDown)
-        {
-            player2.x -= speed;
-            player2.angle = -15;
-        }
-        if (cursors2.right.isDown)
-        {
-            player2.x += speed;
-            player2.angle = 15;
-        }
-        if (cursors2.up.isDown)
-        {
-            player2.y -= speed;
-        }
-        if (cursors2.down.isDown)
-        {
-            player2.y += speed;
-        }
-        if (cursors2.up.isDown == false && cursors2.down.isDown == false && cursors2.left.isDown == false && cursors2.right.isDown == false) 
-        {
-            player2.angle = 0;
-        }
-        if (player2FireButton.isDown)
-            {
-                fireBullet2();
-            }
+
         
     }
     
@@ -290,42 +250,31 @@ window.onload = function () {
         scoreText1.text = scoreString1 + score1;
     }
     
-    //Player 2 capture the star
-    function hitStar2(player2, star)
-    {
-        sound = game.sound.play('capture');
-        star.destroy();
-        var randomX = game.rnd.integerInRange(30,770);
-        var randomY = game.rnd.integerInRange(100,570);
-        star = stars.create(randomX, randomY, 'star');
-        score2 += 1;
-        scoreText2.text = scoreString2 + score2;
-    }
+
     
     
     function resetPlayers()
     {
         player1.kill();
-        player2.kill();
+
         
         
         sound = game.sound.play('collision');
         
         // Recreate players at start
-        player1 = game.add.sprite(0, 560, 'player1');
-        player2 = game.add.sprite(790, 560, 'player2');
-        
+        player1 = game.add.sprite(100, 460, 'player1');
+
         //Set the anchor to the middle of the players
         player1.anchor.setTo(0.5,0.5);
-        player2.anchor.setTo(0.5,0.5);
+
         
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable(player1, Phaser.Physics.ARCADE);
-        game.physics.enable(player2, Phaser.Physics.ARCADE);
+
         
         //Makes it so the players may not leave the screen
         player1.body.collideWorldBounds = true;
-        player2.body.collideWorldBounds = true;
+
         
     }
     
@@ -342,28 +291,10 @@ window.onload = function () {
         player1.revive();
         sound = game.sound.play('bulletHit');
 
-        //Increase the score
-        score2 +=1;
-        scoreText2.text = scoreString2 + score2;
         
     }
     
-    //When player 2 is hit by a bullet
-    function player2Hit(player2, bullet)
-    {
-        //When bullet hits player 2 both are killed
-        bullet.kill();
-        player2.kill();
-        
-        player2.x=790;
-        player2.y=560;
-        player2.revive(); 
-        sound = game.sound.play('bulletHit');
-        
-        score1 += 1;
-        scoreText1.text = scoreString1 + score1;
-        
-    }
+
     
     
     //Fires a bullet from player 1
@@ -388,42 +319,19 @@ window.onload = function () {
 
     }
     
-    //Fires a bullet from player 2
-    function fireBullet2() 
-    {
 
-        //  To avoid them being allowed to fire too fast we set a time limit
-        if (game.time.now > player2FireCounter)
-        {
-            //  Grab the first bullet we can from the pool
-            enemyBullet = enemyBullets.getFirstExists(false);
-
-            if (enemyBullet)
-            {
-                //  And fire it
-                enemyBullet.reset(player2.x, player2.y + 8);
-                game.physics.arcade.moveToObject(enemyBullet,player1, 400);
-                sound = game.sound.play('bulletFire');
-                player2FireCounter = game.time.now + 400;
-            }
-        }
-
-    }
-    
     function restart()
     {
         start.visible = false;
         game.paused = false;
         score1 =0;
-        score2 =0;
+
         scoreText1.text = scoreString1 + score1;
-        scoreText2.text = scoreString2 + score2;
         winText.visible = false;
         
-        player1.x=0;
-        player1.y=560;
-        player2.x=790;
-        player2.y=560;
+        player1.x=100;
+        player1.y=460;
+
         music.paused= false;
     }
     
@@ -431,7 +339,6 @@ window.onload = function () {
     {
         music.paused= true;
         bullets.callAll('kill');
-        enemyBullets.callAll('kill');
         if (score1 >=20)
             {
             var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
@@ -439,13 +346,7 @@ window.onload = function () {
             game.paused = true;
             game.input.onTap.addOnce(restart,this);
             }
-        else if(score2 >=20)
-            {
-            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-            winText = game.add.text(100, 200, "Player 2 Wins! Click to play again!", style);
-            game.paused = true;
-            game.input.onTap.addOnce(restart,this);
-            }
+
     }
     
 };
