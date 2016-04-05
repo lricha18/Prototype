@@ -24,6 +24,8 @@ window.onload = function () {
         game.load.audio('bulletFire', 'assets/bulletFire.wav');
         game.load.audio('collision', 'assets/collision.wav');
         game.load.audio('capture', 'assets/capture.wav');
+        game.load.audio('crouch', 'assets/crouch.wav');
+        game.load.audio('jump','assets/jump.wav');
         
         game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
         
@@ -51,6 +53,7 @@ window.onload = function () {
     var text;
     var winText;
     var sound;
+    var soundCount =0;
     
     //For Score Text
     var score1 = 0;
@@ -160,7 +163,6 @@ window.onload = function () {
         text = game.add.text(400, 10, "Capture the Star!", style);
         text.anchor.setTo(0.5, 0.0);
         
-        
         //start = game.add.image(0,0,'start');
        // game.paused = true;
         //music.paused=true;
@@ -180,7 +182,7 @@ window.onload = function () {
         //game.physics.arcade.overlap(player2, stars, hitStar2, null, this);
         
         //game.physics.arcade.overlap(player, player2,resetPlayers, null, this);
-        //game.physics.arcade.overlap(player, enemyBullets, playerHit, null, this);
+        game.physics.arcade.overlap(bullets, layer, killBullet, null, this);
         //game.physics.arcade.overlap(player2, bullets, player2Hit, null, this);
 
         
@@ -198,6 +200,7 @@ window.onload = function () {
     function detectInput()
     {
         crouchCount-=1;
+        soundCount-=1;
         
         //Player 1 input
         if (cursors.left.isDown)
@@ -245,6 +248,7 @@ window.onload = function () {
             if(crouchCount>0)
                 {
                     player.body.velocity.y = -350;
+                    sound = game.sound.play('jump');
                 }
             else
                 {
@@ -254,7 +258,12 @@ window.onload = function () {
         }
     else if(cursors.down.isDown && player.body.onFloor)
         {
-            //Add crouching animation and spring sound
+            if (soundCount<0)
+                {
+                    sound = game.sound.play('crouch');
+                    soundCount = 60;
+                }
+            
             crouchCount =10;
         }
         
@@ -376,6 +385,11 @@ window.onload = function () {
             game.input.onTap.addOnce(restart,this);
             }
 
+    }
+    
+    function killBullet()
+    {
+        bullet.kill();
     }
     
 };
