@@ -125,7 +125,7 @@ window.onload = function () {
         scoreText1 = game.add.text(10, 10, scoreString1 + score1, { font: '34px Arial', fill: '#fff' });
         
         // Create a sprite to be the player
-        player = game.add.sprite(100, 460, 'player');
+        player = game.add.sprite(50, 1210, 'player');
         
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable(player, Phaser.Physics.ARCADE);
