@@ -27,7 +27,7 @@ window.onload = function () {
         
         game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
         
-        game.load.spritesheet('player', 'assets/dude.png', 32, 48);
+        game.load.spritesheet('player', 'assets/dude2.png', 32, 48);
     }
     
     
@@ -46,7 +46,7 @@ window.onload = function () {
     var bullets;
 
     var bullet;
-
+    
     
     var text;
     var winText;
@@ -63,11 +63,10 @@ window.onload = function () {
     
     //Used so player cannot fire continuously 
     var playerFireCounter = 0;
-
+    var crouchCount=0;
     
     //Players' fire buttons and lock spacebar
     var playerFireButton;
-
     var killSpace;
     
     
@@ -92,7 +91,7 @@ window.onload = function () {
         layer.resizeWorld();
 
         map.setCollision(18);
-        layer.debug = true;
+        //layer.debug = true;
         
         //Creates the star group to be collected
         stars = game.add.physicsGroup();
@@ -152,7 +151,7 @@ window.onload = function () {
         
         //Makes the controls the arrow keys on the keyboard
         cursors = game.input.keyboard.createCursorKeys();
-        playerFireButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        //playerFireButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
         
         
         // Add some text using a CSS style.
@@ -198,6 +197,8 @@ window.onload = function () {
     //Detects if the player has given input
     function detectInput()
     {
+        crouchCount-=1;
+        
         //Player 1 input
         if (cursors.left.isDown)
     {
@@ -240,15 +241,28 @@ window.onload = function () {
     
     
     if (cursors.up.isDown && player.body.onFloor())
-    {
-        player.body.velocity.y = -250;
-    }
-
-        if (playerFireButton.isDown)
+        {   
+            if(crouchCount>0)
+                {
+                    player.body.velocity.y = -350;
+                }
+            else
+                {
+                     player.body.velocity.y = -250;    
+                }
+           
+        }
+    else if(cursors.down.isDown && player.body.onFloor)
+        {
+            //Add crouching animation and spring sound
+            crouchCount =10;
+        }
+        
+        if (game.input.activePointer.justPressed())
             {
                 fireBullet1();
             }
-
+    
         
     }
     
@@ -256,7 +270,7 @@ window.onload = function () {
     
     function render()
     {
-        game.debug.body(player);
+        //game.debug.body(player);
         //game.debug.body(player2);
     }
     
@@ -326,7 +340,7 @@ window.onload = function () {
             {
                 //  And fire it
                 bullet.reset(player.x, player.y + 8);
-                //game.physics.arcade.moveToObject(bullet,player2, 400);
+                game.physics.arcade.moveToPointer(bullet, 400);
                 sound = game.sound.play('bulletFire');
                 playerFireCounter = game.time.now + 400;
             }
