@@ -26,6 +26,7 @@ window.onload = function () {
         game.load.audio('capture', 'assets/capture.wav');
         game.load.audio('crouch', 'assets/crouch.wav');
         game.load.audio('jump','assets/jump.wav');
+        game.load.audio('superJump', 'assets/superJump.wav');
         
         game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
         
@@ -248,11 +249,12 @@ window.onload = function () {
             if(crouchCount>0)
                 {
                     player.body.velocity.y = -350;
-                    sound = game.sound.play('jump');
+                    sound = game.sound.play('superJump');
                 }
             else
                 {
-                     player.body.velocity.y = -250;    
+                    player.body.velocity.y = -250;
+                    sound = game.sound.play('jump');
                 }
            
         }
