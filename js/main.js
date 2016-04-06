@@ -19,7 +19,7 @@ window.onload = function () {
         game.load.image('tiles', 'assets/steampunkish-tileb.png');
         
         
-        game.load.audio('music', 'assets/Jupiter.wav');
+        game.load.audio('music', 'assets/creepy.wav');
         game.load.audio('bulletHit', 'assets/bulletHit.wav');
         game.load.audio('bulletFire', 'assets/bulletFire.wav');
         game.load.audio('collision', 'assets/collision.wav');
@@ -76,7 +76,7 @@ window.onload = function () {
     
     var map;
     var tileset;
-    var layer;
+    var layer, layer2,layer3;
     var facing = 'left';
     
     
@@ -92,9 +92,17 @@ window.onload = function () {
         map = game.add.tilemap('map');
         map.addTilesetImage('steampunkish-tileb', 'tiles');
         layer = map.createLayer('Tile Layer 1');
+        layer2 = map.createLayer('Tile Layer 2');
+        layer3 = map.createLayer('Tile Layer 3');
         layer.resizeWorld();
-
+        
         map.setCollision(18);
+        map.setLayer(layer3);
+        map.setCollision(6);
+        map.setLayer(layer2);
+        map.setCollision(109);
+        
+        
         //layer.debug = true;
         
         //Creates the star group to be collected
@@ -114,19 +122,15 @@ window.onload = function () {
         
        
         //Creates the initial star with world out of bounds detection
-        star = stars.create(400, 300, 'star');
+        //star = stars.create(400, 300, 'star');
         game.physics.enable(stars, Phaser.Physics.ARCADE);
         
         //Creates the background Music
         music = game.add.audio('music');
         music.play();
-        //music.loop = true;
+       
         
-        
-        //  The score String is made and displayed here
-        scoreString1 = 'Player 1 : ';
-        scoreText1 = game.add.text(10, 10, scoreString1 + score1, { font: '34px Arial', fill: '#fff' });
-        
+       
         // Create a sprite to be the player
         player = game.add.sprite(50, 1210, 'player');
         
@@ -155,19 +159,19 @@ window.onload = function () {
         
         //Makes the controls the arrow keys on the keyboard
         cursors = game.input.keyboard.createCursorKeys();
-        //playerFireButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        
         
         
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-        text = game.add.text(400, 10, "Capture the Star!", style);
-        text.anchor.setTo(0.5, 0.0);
+        //text = game.add.text(400, 10, "Capture the Star!", style);
+        //text.anchor.setTo(0.5, 0.0);
         
-        //start = game.add.image(0,0,'start');
-       // game.paused = true;
-        //music.paused=true;
-        //game.input.onTap.addOnce(restart,this);
+        start = game.add.image(0,0,'start');
+        game.paused = true;
+        music.paused=true;
+        game.input.onTap.addOnce(restart,this);
     }
     
     function update()
@@ -178,17 +182,19 @@ window.onload = function () {
 
         game.physics.arcade.collide(player, layer);
         
+        
         //Checks if the player has hit a star
         //game.physics.arcade.overlap(player, stars, hitStar1, null, this);
         //game.physics.arcade.overlap(player2, stars, hitStar2, null, this);
         
-        //game.physics.arcade.overlap(player, player2,resetPlayers, null, this);
-        game.physics.arcade.overlap(bullets, layer, killBullet, null, this);
+        game.physics.arcade.overlap(player, layer2, finishLevel, null, this);
+        game.physics.arcade.collide(bullets, layer, killBullet, null, this);
+        game.physics.arcade.overlap(bullets, layer3, antiGravity, null, this);
         //game.physics.arcade.overlap(player2, bullets, player2Hit, null, this);
 
         
         //Loops the Background Music
-        //loopMusic();
+        loopMusic();
         
         //Input detection
         detectInput();
@@ -258,7 +264,7 @@ window.onload = function () {
                 }
            
         }
-    else if(cursors.down.isDown && player.body.onFloor)
+    else if(cursors.down.isDown && player.body.onFloor())
         {
             if (soundCount<0)
                 {
@@ -382,16 +388,35 @@ window.onload = function () {
         if (score1 >=20)
             {
             var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-            winText = game.add.text(100, 200, "Player 1 Wins! Click to play again!", style);
+            winText = game.add.text(game.camera.x+300, game.camera.y + 300 , "Player 1 Wins! Click to play again!", style);
             game.paused = true;
             game.input.onTap.addOnce(restart,this);
             }
 
     }
     
-    function killBullet()
+    function killBullet(currentBullet)
+    {
+        currentBullet.kill();
+    }
+    
+    function antiGravity()
     {
         bullet.kill();
+        if(player.body.gravity.y>0)
+        {
+            player.body.gravity.y = -250;
+        }
+        else
+        {
+            player.body.gravity.y=250;
+        }
+    }
+    function finishLevel()
+    {
+        var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+        winText = game.add.text(game.camera.x+200, game.camera.y + 250 , "You have finished the current level.\nMore levels to come soon!", style);
+        game.paused = true;
     }
     
 };
