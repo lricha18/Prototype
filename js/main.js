@@ -76,14 +76,14 @@ window.onload = function () {
     
     var map;
     var tileset;
-    var layer, layer2,layer3;
+    var layer, layer2,layer3,layer4;
     var facing = 'left';
     
     
     function create() {
         //Change the background image and scale to fit screen
         game.world.setBounds(0, 0, 800, 600);
-        //background = game.add.tileSprite(0, 0, 800, 600, 'background');
+        background = game.add.tileSprite(0, 0, 1800, 1300, 'background');
         game.stage.backgroundColor = '#787878';
         
         game.physics.startSystem(game, Phaser.Physics.ARCADE);
@@ -94,6 +94,8 @@ window.onload = function () {
         layer = map.createLayer('Tile Layer 1');
         layer2 = map.createLayer('Tile Layer 2');
         layer3 = map.createLayer('Tile Layer 3');
+        layer4 = map.createLayer('Tile Layer 4');
+        
         layer.resizeWorld();
         
         map.setCollision(18);
